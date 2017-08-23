@@ -1,7 +1,7 @@
 # Личный проект «YetiCave» 
 
 * Студент: [Александра Годун](https://up.htmlacademy.ru/php/2/user/30917).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Прохоров](https://htmlacademy.ru/profile/id491331).
 
 ---
 
