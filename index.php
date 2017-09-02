@@ -14,7 +14,7 @@ $lot_time_remaining = "00:00";
 $tomorrow = strtotime('tomorrow midnight');
 
 // временная метка для настоящего времени
-$now = strtotime('now');
+$now = time();
 
 // оставшееся время до начала следующих суток
 $seconds_remaining = $tomorrow - $now;

@@ -11,15 +11,14 @@ $bets = [
 ];
 
 function formatTime($unixSeconds) {
-    $now = strtotime('now');
+    $now = time();
     $day = 24 * 60 * 60;
     $timePassed = $now - $unixSeconds;
 
     if ($timePassed > $day) {
-        $date = date("d.m.Y", $unixSeconds);
-        $time = date("G:i", $unixSeconds);
+        $date = date('d.m.Y в G:i', $unixSeconds);
 
-        return "${date} в ${time}";
+        return $date;
     } else {
         $hours = floor($timePassed / (60 * 60));
         $minutes = floor($timePassed / 60);
