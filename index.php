@@ -1,5 +1,6 @@
 <?php
 require_once 'functions.php';
+require_once 'data/lots.php';
 
 $indexData = [
     'lot_time_remaining' => $lot_time_remaining,
