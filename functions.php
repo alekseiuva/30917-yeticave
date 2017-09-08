@@ -59,13 +59,27 @@ function checkRequired($value) {
 }
 
 /**
+* Валидация выбранной категории
+*
+* @param $value – значение поля
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkCategory($value, $categories) {
+    $isValid = in_array($value, $categories);
+    return [
+        'isValid' => $isValid,
+        'errorMessage' => $isValid ? '' : 'Выберите категорию'
+    ];
+}
+
+/**
 * Валидация числовых значений
 *
 * @param $value – значение поля
 * @return array – массив с полями isValid, errorMessage
 **/
 function checkNumber($value) {
-    $isValid = $value > 0;
+    $isValid = is_numeric($value) && $value > 0;
     return [
         'isValid' => $isValid,
         'errorMessage' => $isValid ? '' : 'Введите значние больше нуля'
