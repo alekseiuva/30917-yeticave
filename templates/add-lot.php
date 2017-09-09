@@ -29,8 +29,11 @@
         <div class="form__item">
             <label for="category">Категория</label>
             <select id="category" name="category" required>
-                <?php foreach($categories as $category): ?>
-                    <option <?= $lot['category'] === $category ? 'selected' : '' ?> >
+                <?php foreach($categories as $key => $category): ?>
+                    <option
+                        <?= $lot['category'] === $key ? 'selected' : '' ?>
+                        value="<?= $key ?>"
+                    >
                         <?= htmlspecialchars($category); ?>
                     </option>
                 <?php endforeach; ?>

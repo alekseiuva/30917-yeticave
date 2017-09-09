@@ -65,7 +65,7 @@ function checkRequired($value) {
 * @return array – массив с полями isValid, errorMessage
 **/
 function checkCategory($value, $categories) {
-    $isValid = in_array($value, $categories);
+    $isValid = array_key_exists($value, $categories);
     return [
         'isValid' => $isValid,
         'errorMessage' => $isValid ? '' : 'Выберите категорию'

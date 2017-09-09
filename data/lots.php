@@ -2,7 +2,7 @@
 $lots = [
     [
         "name" => "2014 Rossignol District Snowboard",
-        "category" => "Доски и лыжи",
+        "category" => 0,
         "price" => 10999,
         "image" => "img/lot-1.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
@@ -14,7 +14,7 @@ $lots = [
     ],
     [
         "name" => "DC Ply Mens 2016/2017 Snowboard	Доски и лыжи",
-        "category" => "Доски и лыжи",
+        "category" => 0,
         "price" => 159999,
         "image" => "img/lot-2.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
@@ -26,7 +26,7 @@ $lots = [
     ],
     [
         "name" => "Крепления Union Contact Pro 2015 года размер L/XL",
-        "category" => "Крепления",
+        "category" => 1,
         "price" => 8000,
         "image" => "img/lot-3.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
@@ -38,7 +38,7 @@ $lots = [
     ],
     [
         "name" => "Ботинки для сноуборда DC Mutiny Charocal",
-        "category" => "Ботинки",
+        "category" => 2,
         "price" => 10999,
         "image" => "img/lot-4.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
@@ -50,7 +50,7 @@ $lots = [
     ],
     [
         "name" => "Куртка для сноуборда DC Mutiny Charocal",
-        "category" => "Одежда",
+        "category" => 3,
         "price" => 7500,
         "image" => "img/lot-5.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
@@ -62,7 +62,7 @@ $lots = [
     ],
     [
         "name" => "Маска Oakley Canopy",
-        "category" => "Разное",
+        "category" => 6,
         "price" => 5400,
         "image" => "img/lot-6.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
