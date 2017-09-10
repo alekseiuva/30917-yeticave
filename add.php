@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         if ($isTypeValid && $isSizeValid) {
-            $filePath = __DIR__ . '/img';
-            $fileUrl = '/img' . $fileName;
+            $filePath = __DIR__ . '/img/';
+            $fileUrl = '/img/' . $fileName;
             move_uploaded_file($_FILES['image']['tmp_name'], $filePath . $fileName);
         }
     }

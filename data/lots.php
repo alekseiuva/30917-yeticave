@@ -62,7 +62,7 @@ $lots = [
     ],
     [
         "name" => "Маска Oakley Canopy",
-        "category" => 6,
+        "category" => 5,
         "price" => 5400,
         "image" => "img/lot-6.jpg",
         "description" => "Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
