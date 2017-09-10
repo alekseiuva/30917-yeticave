@@ -21,7 +21,12 @@ $lot_time_remaining = gmdate("H:i", $seconds_remaining);
 
 $categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
 
-
+/**
+* Форматирование времени
+*
+* @param $unixSeconds – количество секунд
+* @return string – отформатированная дата
+**/
 function formatTime($unixSeconds) {
     $now = time();
     $day = 24 * 60 * 60;
@@ -37,6 +42,63 @@ function formatTime($unixSeconds) {
 
         return $timePassed > (60 * 60) ? "${hours} часов назад" : "${minutes} минут назад";
     }
+}
+
+/**
+* Валидация полей, обязательных для заполнения
+*
+* @param $value – значение поля
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkRequired($value) {
+    $isValid = strlen($value) > 0;
+    return [
+        'isValid' => $isValid,
+        'errorMessage' => $isValid ? '' : 'Заполните это поле'
+    ];
+}
+
+/**
+* Валидация выбранной категории
+*
+* @param $value – значение поля
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkCategory($value, $categories) {
+    $isValid = array_key_exists($value, $categories);
+    return [
+        'isValid' => $isValid,
+        'errorMessage' => $isValid ? '' : 'Выберите категорию'
+    ];
+}
+
+/**
+* Валидация числовых значений
+*
+* @param $value – значение поля
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkNumber($value) {
+    $isValid = is_numeric($value) && $value > 0;
+    return [
+        'isValid' => $isValid,
+        'errorMessage' => $isValid ? '' : 'Введите значние больше нуля'
+    ];
+}
+
+/**
+* Валидация числовых даты
+*
+* @param $value – значение поля
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkExpDate($value) {
+    $now = time();
+    $isValid = strtotime($value) > $now;
+    return [
+        'isValid' => $isValid,
+        'errorMessage' => $isValid ? '' : 'Введите валидную дату'
+    ];
 }
 
 /**

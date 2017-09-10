@@ -10,6 +10,7 @@ $indexData = [
 
 $content = renderTemplate('./templates/index.php', $indexData);
 $html = renderTemplate('./templates/layout.php', [
+    'categories' => $categories,
     'content' => $content,
     'title' => 'Главная',
     'is_auth' => $is_auth,

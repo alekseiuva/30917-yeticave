@@ -1,4 +1,4 @@
-<section class="promo">
+<section class="promo container">
     <h2 class="promo__title">Нужен стафф для катки?</h2>
     <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
     <ul class="promo__list">
@@ -22,7 +22,7 @@
         </li>
     </ul>
 </section>
-<section class="lots">
+<section class="lots container">
     <div class="lots__header">
         <h2>Открытые лоты</h2>
 
@@ -39,7 +39,7 @@
                 <img src="<?=$lot['image']?>" width="350" height="260" alt="Сноуборд">
             </div>
             <div class="lot__info">
-                <span class="lot__category"><?=htmlspecialchars($lot['category']);?>"</span>
+                <span class="lot__category"><?=htmlspecialchars($categories[$lot['category']]);?></span>
                 <h3 class="lot__title">
                     <a class="text-link" href="lot.php?id=<?= $key ?>">
                         <?=htmlspecialchars($lot['name'])?>
