@@ -46,7 +46,6 @@ $content = renderTemplate('./templates/login.php', [
     'categories' => $categories,
 ]);
 $html = renderTemplate('./templates/layout.php', [
-    'sesh' => $_SESSION,
     'title' => 'Вход в личный кабинет',
     'categories' => $categories,
     'content' => $content,

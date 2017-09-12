@@ -16,7 +16,7 @@
             type="text"
             name="email"
             placeholder="Введите e-mail"
-            value="<?= $values['email'] ?? ''; ?>"
+            value="<?= $values['email'] ? htmlspecialchars($values['email']) : ''; ?>"
             required
         >
         <span class="form__error">
