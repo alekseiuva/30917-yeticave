@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'functions.php';
 require_once 'data/lots.php';
 require_once 'data/bets.php';
@@ -13,6 +14,7 @@ if (isset($lot)) {
     $lotContent = renderTemplate('./templates/lot.php', [
         'categories' => $categories,
         'bets' => $bets,
+        'is_auth' => $is_auth,
         'lot' => $lot,
         ]);
     } else {

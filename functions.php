@@ -1,7 +1,7 @@
 <?php
-$is_auth = (bool) rand(0, 1);
-$user_name = 'Константин';
-$user_avatar = 'img/user.jpg';
+$is_auth = isset($_SESSION['user']);
+$user_name = $_SESSION['user']['name'] ?? null;
+$user_avatar = $_SESSION['user']['avatar'] ?? 'img/no-avatar.jpg';
 
 // устанавливаем часовой пояс в Московское время
 date_default_timezone_set('Europe/Moscow');
@@ -50,11 +50,11 @@ function formatTime($unixSeconds) {
 * @param $value – значение поля
 * @return array – массив с полями isValid, errorMessage
 **/
-function checkRequired($value) {
+function checkRequired($value, $msg) {
     $isValid = strlen($value) > 0;
     return [
         'isValid' => $isValid,
-        'errorMessage' => $isValid ? '' : 'Заполните это поле'
+        'errorMessage' => $isValid ? '' : $msg
     ];
 }
 
@@ -64,11 +64,11 @@ function checkRequired($value) {
 * @param $value – значение поля
 * @return array – массив с полями isValid, errorMessage
 **/
-function checkCategory($value, $categories) {
+function checkCategory($value, $msg, $categories) {
     $isValid = array_key_exists($value, $categories);
     return [
         'isValid' => $isValid,
-        'errorMessage' => $isValid ? '' : 'Выберите категорию'
+        'errorMessage' => $isValid ? '' : $msg
     ];
 }
 
@@ -78,11 +78,11 @@ function checkCategory($value, $categories) {
 * @param $value – значение поля
 * @return array – массив с полями isValid, errorMessage
 **/
-function checkNumber($value) {
+function checkNumber($value, $msg) {
     $isValid = is_numeric($value) && $value > 0;
     return [
         'isValid' => $isValid,
-        'errorMessage' => $isValid ? '' : 'Введите значние больше нуля'
+        'errorMessage' => $isValid ? '' : $msg
     ];
 }
 
@@ -92,12 +92,12 @@ function checkNumber($value) {
 * @param $value – значение поля
 * @return array – массив с полями isValid, errorMessage
 **/
-function checkExpDate($value) {
+function checkExpDate($value, $msg) {
     $now = time();
     $isValid = strtotime($value) > $now;
     return [
         'isValid' => $isValid,
-        'errorMessage' => $isValid ? '' : 'Введите валидную дату'
+        'errorMessage' => $isValid ? '' : $msg
     ];
 }
 
@@ -122,5 +122,13 @@ function renderTemplate($path, $args) {
     include $path;
 
     return ob_get_clean();
+}
+
+function searchUserByEmail($email, $users) {
+    foreach ($users as $user) {
+        if ($user['email'] == $email) {
+            return $user;
+        }
+    }
 }
 ?>

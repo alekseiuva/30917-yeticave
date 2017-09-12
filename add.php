@@ -1,24 +1,46 @@
 <?php
+session_start();
 require_once 'functions.php';
 require_once 'data/bets.php';
 
 $formErrors = [];
 $fileUrl = null;
 $validationRules = [
-    'name' => 'checkRequired',
-    'category' => 'checkCategory',
-    'description' => 'checkRequired',
-    'price' => 'checkNumber',
-    'step' => 'checkNumber',
-    'date' => 'checkExpDate'
+    'name' => [
+        'predicate' => 'checkRequired',
+        'errorMessage' => 'Заполните это поле'
+    ],
+    'category' => [
+        'predicate' => 'checkCategory',
+        'errorMessage' => 'Выберите категорию'
+    ],
+    'description' => [
+        'predicate' => 'checkRequired',
+        'errorMessage' => 'Заполните это поле'
+    ],
+    'price' => [
+        'predicate' => 'checkNumber',
+        'errorMessage' => 'Введите значние больше нуля'
+    ],
+    'step' => [
+        'predicate' => 'checkNumber',
+        'errorMessage' => 'Введите значние больше нуля'
+    ],
+    'date' => [
+        'predicate' => 'checkExpDate',
+        'errorMessage' => 'Введите валидную дату'
+    ]
 ];
 $validFileTypes = ['image/jpeg', 'image/png'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach($_POST as $key => $value) {
+        $predicate = $validationRules[$key]['predicate'];
+        $msg = $validationRules[$key]['errorMessage'];
+
         $result = $key === 'category' ?
-            call_user_func($validationRules[$key], $value, $categories) :
-            call_user_func($validationRules[$key], $value);
+            call_user_func($predicate, $value, $msg, $categories) :
+            call_user_func($predicate, $value, $msg);
 
         if(!$result['isValid']) {
             $formErrors[$key] = $result['errorMessage'];
@@ -81,5 +103,11 @@ $html = renderTemplate('./templates/layout.php', [
     'user_avatar' => $user_avatar,
 ]);
 
-print($html);
+if (isset($_SESSION['user'])) {
+    print($html);
+} else {
+    // header('HTTP/1.1 403 Forbidden');
+    header('Location: /login.php');
+}
+
 ?>
