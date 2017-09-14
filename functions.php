@@ -24,6 +24,20 @@ $categories = ["Доски и лыжи", "Крепления", "Ботинки",
 /**
 * Форматирование времени
 *
+* @param $betStart – time stamp когда была сделана ставка
+* @return string – время до окончания ставки
+**/
+function getRemaingTime($betStart) {
+    $betEnd = $betStart + 24 * 60 * 60;
+    $secondsRemaining = $betEnd - time();
+
+    // return gmdate("H:i:s", $secondsRemaining);
+    return $secondsRemaining;
+}
+
+/**
+* Форматирование времени
+*
 * @param $unixSeconds – количество секунд
 * @return string – отформатированная дата
 **/

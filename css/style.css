@@ -1019,7 +1019,13 @@ h2 {
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  flex-wrap: wrap;
   margin-top: 17px;
+}
+
+.lot-item__form--invalid .form__error {
+  display: block;
+  flex-basis: 100%;
 }
 
 .lot-item__form-item {
