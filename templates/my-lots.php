@@ -20,22 +20,22 @@
                 </div>
                 <div>
                     <h3 class="rates__title">
-                        <a href="lot.html"><?= $bet['item']; ?></a>
+                        <a href="lot.html"><?= htmlspecialchars($bet['item']); ?></a>
                     </h3>
                     <?php if ($bet['status'] === 'win'): ?>
-                    <p><?= $bet['info']; ?></p>
+                    <p><?= htmlspecialchars($bet['info']); ?></p>
                     <?php endif; ?>
                 </div>
             </td>
 
-            <td class="rates__category"><?= $categories[$bet['category']]; ?></td>
+            <td class="rates__category"><?= htmlspecialchars($categories[$bet['category']]); ?></td>
             <td class="rates__timer">
                 <div class="<?= "timer timer--" . $bet['status']; ?>">
                     <!-- TODO: fix it when all values are stored in db in the same format -->
                     <?= is_numeric($bet['ends']) ? gmdate("H:i:s", $bet['ends']) : $bet['ends']; ?>
                 </div>
             </td>
-            <td class="rates__price"><?= $bet['price']; ?> ₽</td>
+            <td class="rates__price"><?= htmlspecialchars($bet['price']); ?> ₽</td>
             <td class="rates__time"><?= formatTime($bet['ts']); ?></td>
         </tr>
     <?php endforeach; ?>
