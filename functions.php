@@ -145,4 +145,12 @@ function searchUserByEmail($email, $users) {
         }
     }
 }
+
+function getLotId($name, $lots) {
+    foreach ($lots as $key => $lot) {
+        if ($lot['name'] == $name) {
+            return $key;
+        }
+    }
+}
 ?>

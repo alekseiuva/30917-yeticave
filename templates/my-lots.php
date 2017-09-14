@@ -20,7 +20,7 @@
                 </div>
                 <div>
                     <h3 class="rates__title">
-                        <a href="lot.html"><?= htmlspecialchars($bet['item']); ?></a>
+                        <a href="lot.php?id=<?= $bet['id'] ?? getLotId($bet['item'], $lots); ?>"><?= htmlspecialchars($bet['item']); ?></a>
                     </h3>
                     <?php if ($bet['status'] === 'win'): ?>
                     <p><?= htmlspecialchars($bet['info']); ?></p>

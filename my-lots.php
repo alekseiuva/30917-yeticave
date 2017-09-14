@@ -12,6 +12,7 @@ if (isset($_COOKIE['userBets'])) {
         // TODO: replace with the latest bet if item is the same
         $myBets[] = [
             'item' => $lots[$id]['name'],
+            'id' => $id,
             'image' => $lots[$id]['image'],
             'category' => $lots[$id]['category'],
             'price' => $userBet['price'],
@@ -28,6 +29,7 @@ usort($myBets, function ($item1, $item2) {
 
 $lotContent = renderTemplate('./templates/my-lots.php', [
     'bets' => $myBets,
+    'lots' => $lots,
     'categories' => $categories
 ]);
 

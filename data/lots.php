@@ -13,7 +13,7 @@ $lots = [
         равнодушным."
     ],
     [
-        "name" => "DC Ply Mens 2016/2017 Snowboard	Доски и лыжи",
+        "name" => "DC Ply Mens 2016/2017 Snowboard",
         "category" => 0,
         "price" => 159999,
         "image" => "img/lot-2.jpg",

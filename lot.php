@@ -21,10 +21,8 @@ if (isset($_GET['id'])) {
 if (isset($_COOKIE['userBets'])) {
     $betCookie = json_decode($_COOKIE['userBets'], true);
 
-    foreach ($betCookie as $bet) {
-        if ($bet['lotId'] == $lotId) {
-            $isBetMade = true;
-        }
+    if (array_key_exists($lotId, $betCookie))  {
+        $isBetMade = true;
     }
 }
 
@@ -46,12 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'time' => time()
         ];
 
-        $betCookie[] = $betInfo;
+        $betCookie[$lotId] = $betInfo;
         setcookie('userBets', json_encode($betCookie));
         header("Location: /my-lots.php");
     }
 }
-
 
 if (isset($lot)) {
     $lotContent = renderTemplate('./templates/lot.php', [
