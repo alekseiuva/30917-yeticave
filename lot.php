@@ -4,17 +4,60 @@ require_once 'functions.php';
 require_once 'data/lots.php';
 require_once 'data/bets.php';
 
+$formErrors = [];
+$validationRules = [
+    'price' => [
+        'predicate' => 'checkNumber',
+        'errorMessage' => 'Невалидная сумма'
+    ]
+];
+$isBetMade = false;
 
 if (isset($_GET['id'])) {
     $lotId = $_GET['id'];
     $lot = array_key_exists($lotId, $lots) ? $lots[$lotId] : null;
 }
 
+if (isset($_COOKIE['userBets'])) {
+    $betCookie = json_decode($_COOKIE['userBets'], true);
+
+    if (array_key_exists($lotId, $betCookie))  {
+        $isBetMade = true;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    foreach($_POST as $key => $value) {
+        $predicate = $validationRules[$key]['predicate'];
+        $msg = $validationRules[$key]['errorMessage'];
+        $result = call_user_func($predicate, $value, $msg);
+
+        if(!$result['isValid']) {
+            $formErrors[$key] = $result['errorMessage'];
+        }
+    }
+
+    if (count($formErrors) === 0) {
+        $betInfo = [
+            'lotId' => $lotId,
+            'price' => $_POST['price'],
+            'time' => time()
+        ];
+
+        $betCookie[$lotId] = $betInfo;
+        setcookie('userBets', json_encode($betCookie));
+        header("Location: /my-lots.php");
+    }
+}
+
 if (isset($lot)) {
     $lotContent = renderTemplate('./templates/lot.php', [
         'categories' => $categories,
+        'formErrors' => $formErrors,
         'bets' => $bets,
+        'isBetMade' => $isBetMade,
         'is_auth' => $is_auth,
+        'lotId' => $lotId,
         'lot' => $lot,
         ]);
     } else {
