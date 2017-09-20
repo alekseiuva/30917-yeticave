@@ -24,7 +24,7 @@ CREATE INDEX lot_category on lot(category_id);
 
 CREATE TABLE category(
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name CHAR(20)
+  name CHAR(128)
 );
 
 CREATE UNIQUE INDEX category_id on category(id);
@@ -33,7 +33,7 @@ CREATE TABLE user(
   id INT AUTO_INCREMENT PRIMARY KEY,
   registeration_date DATETIME,
   email CHAR(255),
-  password CHAR(32),
+  password CHAR(128),
   name CHAR(128),
   avatar CHAR(128),
   contacts_info TEXT
