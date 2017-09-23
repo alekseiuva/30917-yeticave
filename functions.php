@@ -1,4 +1,5 @@
 <?php
+require_once 'mysql_helper.php';
 $is_auth = isset($_SESSION['user']);
 $user_name = $_SESSION['user']['name'] ?? null;
 $user_avatar = $_SESSION['user']['avatar'] ?? 'img/no-avatar.jpg';
@@ -122,7 +123,6 @@ function checkExpDate($value, $msg) {
 * @param $array – массив с данными шаблона
 * @return string – сгенерированный HTML код шаблона в виде строки
 **/
-
 function renderTemplate($path, $args) {
     if (!file_exists($path)) {
         return '';
@@ -152,5 +152,72 @@ function getLotId($name, $lots) {
             return $key;
         }
     }
+}
+
+/**
+* Функция для получения данных
+*
+* @param $link – ресурс соединения
+* @param $query – SQL-запрос с плейсхолдерами для всех переменных значений
+* @param [$queryData]–  простой массив со всеми значениями для запроса.
+* @return array – пустой массив или двумерный массив с данными
+**/
+function selectData($link, $query, $queryData = []) {
+    $data = [];
+    $stmt = db_get_prepare_stmt($link, $query, $queryData);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($result) {
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $data[] = $row;
+        }
+    }
+
+    return $data;
+}
+
+function prepareValues(&$value, $key, $link) {
+    if (is_string($value)) {
+        $value = $key . ' = ' . '\'' . mysqli_real_escape_string($link, $value) . '\'' ;
+    } else {
+        $value = $key . ' = ' . $value;
+    }
+}
+
+/**
+* Функция для вставки данных
+*
+* @param $link – ресурс соединения
+* @param $tableName – имя таблицы, в которую добавляются данные
+* @param [$queryData]–  пассоциативный массив, где ключи - имена полей, а значения - значения полей таблицы
+* @return (false | $id)
+**/
+function insert_data($link, $tableName, $queryData) {
+    array_walk($queryData, 'prepareValues', $link);
+    $strValues = implode(', ', $queryData);
+    $query = "INSERT INTO ${tableName} SET ${strValues};";
+    $stmt = db_get_prepare_stmt($link, $query);
+    $result = false;
+
+    if ($stmt) {
+        $result = mysqli_stmt_execute($stmt) ? intval(mysqli_insert_id($link)) : false;
+    }
+
+    return $result;
+}
+
+/**
+* Функция для произвольного запроса
+*
+* @param $link – ресурс соединения
+* @param $query – SQL-запрос с плейсхолдерами для всех переменных значений
+* @param [$queryData]–  простой массив со всеми значениями для запроса.
+* @return bool
+**/
+function exec_query($link, $query, $queryData = []) {
+    $stmt = db_get_prepare_stmt($link, $query, $queryData);
+
+    return $stmt ? mysqli_stmt_execute($stmt) : false;
 }
 ?>
