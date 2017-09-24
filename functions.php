@@ -20,8 +20,6 @@ $now = time();
 $seconds_remaining = $tomorrow - $now;
 $lot_time_remaining = gmdate("H:i", $seconds_remaining);
 
-$categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
-
 /**
 * Форматирование времени
 *

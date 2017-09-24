@@ -3,7 +3,7 @@
 
   <?php foreach($categories as $category): ?>
     <li class="nav__item">
-      <a href="all-lots.html"><?=htmlspecialchars($category);?></a>
+      <a href="all-lots.html"><?=htmlspecialchars($category['name']);?></a>
     </li>
   <?php endforeach; ?>
 
@@ -34,7 +34,7 @@
                         <?= $lot['category'] === $key ? 'selected' : '' ?>
                         value="<?= $key ?>"
                     >
-                        <?= htmlspecialchars($category); ?>
+                        <?= htmlspecialchars($category['name']); ?>
                     </option>
                 <?php endforeach; ?>
             </select>

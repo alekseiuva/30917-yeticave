@@ -9,6 +9,7 @@ if($connection == false) {
         'error_msg' => mysqli_connect_error(),
     ]);
     $html = renderTemplate('./templates/layout.php', [
+        // FIXME: no db – no category
         'categories' => $categories,
         'content' => $errorPage,
         'title' => 'Ошибка',
@@ -21,6 +22,7 @@ if($connection == false) {
     die();
 }
 
+mysqli_set_charset($connection, 'utf8');
 error_reporting($previous);
 
 ?>
