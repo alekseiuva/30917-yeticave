@@ -193,7 +193,7 @@ function prepareValues(&$value, $key, $link) {
 * @param [$queryData]–  пассоциативный массив, где ключи - имена полей, а значения - значения полей таблицы
 * @return (false | $id)
 **/
-function insert_data($link, $tableName, $queryData) {
+function insertData($link, $tableName, $queryData) {
     array_walk($queryData, 'prepareValues', $link);
     $strValues = implode(', ', $queryData);
     $query = "INSERT INTO ${tableName} SET ${strValues};";
@@ -215,7 +215,7 @@ function insert_data($link, $tableName, $queryData) {
 * @param [$queryData]–  простой массив со всеми значениями для запроса.
 * @return bool
 **/
-function exec_query($link, $query, $queryData = []) {
+function execQuery($link, $query, $queryData = []) {
     $stmt = db_get_prepare_stmt($link, $query, $queryData);
 
     return $stmt ? mysqli_stmt_execute($stmt) : false;
