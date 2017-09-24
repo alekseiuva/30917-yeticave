@@ -5,7 +5,7 @@ require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
 require_once 'data/mybets.php';
-require_once 'data/lots.php';
+
 
 if (isset($_COOKIE['userBets'])) {
     $betCookie = json_decode($_COOKIE['userBets'], true);
@@ -17,7 +17,7 @@ if (isset($_COOKIE['userBets'])) {
             'item' => $lots[$id]['name'],
             'id' => $id,
             'image' => $lots[$id]['image'],
-            'category' => $lots[$id]['category'],
+            'category' => $lots[$id]['category_id'],
             'price' => $userBet['price'],
             'ends' => getRemaingTime($userBet['time']),
             'ts' => $userBet['time'],

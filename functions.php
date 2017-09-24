@@ -37,6 +37,19 @@ function getRemaingTime($betStart) {
 /**
 * Форматирование времени
 *
+* @param $betEnd – дата окончания ставки
+* @return string – отформатированное время до окончания ставки
+**/
+function formatRemaingTime($betEndStr) {
+    $secondsRemaining = strtotime($betEndStr) - time();
+
+    return gmdate("H:i:s", $secondsRemaining);
+    // return $secondsRemaining;
+}
+
+/**
+* Форматирование времени
+*
 * @param $unixSeconds – количество секунд
 * @return string – отформатированная дата
 **/

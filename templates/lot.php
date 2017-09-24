@@ -16,7 +16,7 @@
             <div class="lot-item__image">
                 <img src="<?= $lot['image']; ?>" width="730" height="548" alt="Сноуборд">
             </div>
-            <p class="lot-item__category">Категория: <span><?= $categories[$lot['category']]['name']; ?></span></p>
+            <p class="lot-item__category">Категория: <span><?= $categories[$lot['category_id']]['name']; ?></span></p>
             <p class="lot-item__description">
                 <?= htmlspecialchars($lot['description']); ?>
             </p>
@@ -24,15 +24,15 @@
         <div class="lot-item__right">
             <div class="lot-item__state">
                 <div class="lot-item__timer timer">
-                    10:54:12
+                    <?= formatRemaingTime($lot['date_expires']); ?>
                 </div>
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">
                         <span class="lot-item__amount">Текущая цена</span>
-                        <span class="lot-item__cost"><?= $lot['price']; ?></span>
+                        <span class="lot-item__cost"><?= $lot['price_start']; ?></span>
                     </div>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span>12 000 р</span>
+                        Мин. ставка <span><?= $lot['bet_step']; ?>р</span>
                     </div>
                 </div>
 
@@ -44,7 +44,7 @@
                     >
                         <p class="lot-item__form-item">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="number" name="price" placeholder="12 000">
+                            <input id="cost" type="number" name="price" placeholder="<?= $lot['price_start'] + $lot['bet_step']; ?>">
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
                         <span class="form__error"><?= $formErrors['cost'] ?? ''; ?></span>

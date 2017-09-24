@@ -2,12 +2,12 @@ USE yeticave;
 
 INSERT INTO category (name)
 VALUES
-  (N'Доски и лыжи'),
-  (N'Крепления'),
-  (N'Ботинки'),
-  (N'Одежда'),
-  (N'Инструменты'),
-  (N'Разное');
+  ('Доски и лыжи'),
+  ('Крепления'),
+  ('Ботинки'),
+  ('Одежда'),
+  ('Инструменты'),
+  ('Разное');
 
 INSERT INTO user (registeration_date, email, name, password)
 VALUES

@@ -24,7 +24,7 @@ CREATE INDEX lot_category on lot(category_id);
 
 CREATE TABLE category(
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name NVARCHAR(128)
+  name CHAR(128)
 );
 
 CREATE UNIQUE INDEX category_id on category(id);
