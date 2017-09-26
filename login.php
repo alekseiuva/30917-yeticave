@@ -1,10 +1,6 @@
 <?php
-session_start();
-require_once 'functions.php';
-require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
-require_once 'userdata.php';
 
 $formErrors = [];
 $validationRules = [
@@ -32,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')  {
     if (count($formErrors) === 0) {
         $email = $_POST['email'];
         $password = $_POST['password'];
-        $user = searchUserByEmail($email, $users);
+        $user = searchUserByEmail($email, $connection);
 
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user'] = $user;
+        if (!empty($user) && password_verify($password, $user[0]['password'])) {
+            $_SESSION['user'] = $user[0];
             header('Location: /index.php');
         } else {
             $formErrors['password'] = 'Вы ввели неверный пароль';
@@ -46,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')  {
 $content = renderTemplate('./templates/login.php', [
     'values' => $_POST,
     'formErrors' => $formErrors,
-    'categories' => $categories,
+    'categories' => $categories
 ]);
 $html = renderTemplate('./templates/layout.php', [
     'title' => 'Вход в личный кабинет',

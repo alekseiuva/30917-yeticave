@@ -16,7 +16,7 @@
             <div class="lot-item__image">
                 <img src="<?= $lot['image']; ?>" width="730" height="548" alt="Сноуборд">
             </div>
-            <p class="lot-item__category">Категория: <span><?= $categories[$lot['category_id']]['name']; ?></span></p>
+            <p class="lot-item__category">Категория: <span><?= getCategoryName($lot['category_id'], $categories); ?></span></p>
             <p class="lot-item__description">
                 <?= htmlspecialchars($lot['description']); ?>
             </p>
@@ -32,11 +32,11 @@
                         <span class="lot-item__cost"><?= $lot['price_start']; ?></span>
                     </div>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span><?= $lot['bet_step']; ?>р</span>
+                        Мин. ставка <span><?= $lot['bet_step'] + $lot['price_start']; ?>р</span>
                     </div>
                 </div>
 
-                <?php if ($is_auth && !$isBetMade): ?>
+                <?php if ($bet_permited): ?>
                     <form
                         class="<?= count($formErrors) > 0 ? 'lot-item__form lot-item__form--invalid' : 'lot-item__form' ?>"
                         action="<?='lot.php?id=' . $lotId; ?>"
@@ -47,20 +47,20 @@
                             <input id="cost" type="number" name="price" placeholder="<?= $lot['price_start'] + $lot['bet_step']; ?>">
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
-                        <span class="form__error"><?= $formErrors['cost'] ?? ''; ?></span>
+                        <span class="form__error"><?= $formErrors['price'] ?? ''; ?></span>
                     </form>
                 <?php endif; ?>
 
                 </div>
             <div class="history">
-                <h3>История ставок (<span>4</span>)</h3>
+                <h3>История ставок (<span><?= count($bets); ?></span>)</h3>
                 <!-- заполните эту таблицу данными из массива $bets-->
                 <table class="history__list">
                 <?php foreach($bets as $bet): ?>
                     <tr class="history__item">
                         <td class="history__name"><?= htmlspecialchars($bet['name']); ?></td>
                         <td class="history__price"><?= htmlspecialchars($bet['price']); ?> ₽</td>
-                        <td class="history__time"><?= formatTime($bet['ts']);  ?></td>
+                        <td class="history__time"><?= formatTime($bet['date']);  ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </table>

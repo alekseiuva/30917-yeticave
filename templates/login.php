@@ -5,6 +5,10 @@
 > <!-- form--invalid -->
     <h2>Вход</h2>
 
+    <?php if(isset($_GET['new_user'])): ?>
+        <p>Теперь вы можете войти, используя свой email и пароль.</p>
+    <?php endif; ?>
+
     <div
         class="<?= isset($formErrors['email']) ?
             'form__item form__item--invalid' :

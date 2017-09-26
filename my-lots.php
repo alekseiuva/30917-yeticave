@@ -4,31 +4,9 @@ require_once 'functions.php';
 require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
-require_once 'data/mybets.php';
 
-
-if (isset($_COOKIE['userBets'])) {
-    $betCookie = json_decode($_COOKIE['userBets'], true);
-
-    foreach($betCookie as $userBet) {
-        $id = $userBet['lotId'];
-        // TODO: replace with the latest bet if item is the same
-        $myBets[] = [
-            'item' => $lots[$id]['name'],
-            'id' => $id,
-            'image' => $lots[$id]['image'],
-            'category' => $lots[$id]['category_id'],
-            'price' => $userBet['price'],
-            'ends' => getRemaingTime($userBet['time']),
-            'ts' => $userBet['time'],
-            'status' => 'finishing'
-        ];
-    }
-}
-
-usort($myBets, function ($item1, $item2) {
-    return $item2['ts'] <=> $item1['ts'];
-});
+$myBets = selectData($connection, 'SELECT * FROM bet JOIN lot ON bet.lot_id = lot.id;');
+$lots = selectData($connection, 'SELECT * FROM lot');
 
 $lotContent = renderTemplate('./templates/my-lots.php', [
     'bets' => $myBets,

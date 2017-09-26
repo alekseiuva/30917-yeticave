@@ -1,12 +1,9 @@
 <?php
-session_start();
-require_once 'functions.php';
-require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
 
+$lots = selectData($connection, 'SELECT * FROM lot');
 $indexData = [
-    'lot_time_remaining' => $lot_time_remaining,
     'categories' => $categories,
     'lots' => $lots,
 ];

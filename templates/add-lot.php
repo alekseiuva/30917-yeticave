@@ -29,10 +29,10 @@
         <div class="form__item">
             <label for="category">Категория</label>
             <select id="category" name="category" required>
-                <?php foreach($categories as $key => $category): ?>
+                <?php foreach($categories as $category): ?>
                     <option
-                        <?= $lot['category'] === $key ? 'selected' : '' ?>
-                        value="<?= $key ?>"
+                        <?= $lot['category_id'] === $category['id'] ? 'selected' : '' ?>
+                        value="<?= $category['id']; ?>"
                     >
                         <?= htmlspecialchars($category['name']); ?>
                     </option>
@@ -73,7 +73,7 @@
 
         <div class="<?= isset($formErrors['price']) ? 'form__item form__item--small form__item--invalid' : 'form__item form__item--small' ?>">
             <label for="lot-rate">Начальная цена</label>
-            <input id="lot-rate" type="number" name="price" value="<?= htmlspecialchars($lot['price']) ?>" placeholder="0" required>
+            <input id="lot-rate" type="number" name="price" value="<?= htmlspecialchars($lot['price_start']) ?>" placeholder="0" required>
             <span class="form__error">
                 <?= $formErrors['price'] ?? ''?>
             </span>
@@ -81,7 +81,7 @@
 
         <div class="<?= isset($formErrors['step']) ? 'form__item form__item--small form__item--invalid' : 'form__item form__item--small' ?>">
             <label for="lot-step">Шаг ставки</label>
-            <input id="lot-step" type="number" name="step" value="<?= htmlspecialchars($lot['step']) ?>" placeholder="0" required>
+            <input id="lot-step" type="number" name="step" value="<?= htmlspecialchars($lot['bet_step']) ?>" placeholder="0" required>
             <span class="form__error">
                 <?= $formErrors['step'] ?? ''?>
             </span>
@@ -89,7 +89,7 @@
 
         <div class="<?= isset($formErrors['date']) ? 'form__item form__item--invalid' : 'form__item' ?>">
             <label for="lot-date">Дата завершения</label>
-            <input class="form__input-date" id="lot-date" type="text" name="date" value="<?= htmlspecialchars($lot['date']) ?>" placeholder="20.05.2017" required>
+            <input class="form__input-date" id="lot-date" type="text" name="date" value="<?= htmlspecialchars($lot['date_expires']) ?>" placeholder="20.05.2017" required>
             <span class="form__error">
                 <?= $formErrors['date'] ?? ''?>
             </span>

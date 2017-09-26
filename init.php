@@ -1,4 +1,15 @@
 <?php
+session_start();
+require_once 'functions.php';
+require_once 'mysql_helper.php';
+
+$is_auth = isset($_SESSION['user']);
+$user_name = $_SESSION['user']['name'] ?? null;
+$user_avatar = $_SESSION['user']['avatar'] ?? 'img/no-avatar.jpg';
+
+// устанавливаем часовой пояс в Московское время
+date_default_timezone_set('Europe/Moscow');
+
 $previous = error_reporting(0);
 $connection = mysqli_connect('localhost', 'root', 'mowlmokm', 'yeticave');
 

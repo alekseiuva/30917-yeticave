@@ -1,66 +1,64 @@
 <?php
-session_start();
-require_once 'functions.php';
-require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
-require_once 'data/bets.php';
 
 $formErrors = [];
 $validationRules = [
     'price' => [
-        'predicate' => 'checkNumber',
+        'predicate' => 'checkBet',
         'errorMessage' => 'Невалидная сумма'
-    ]
-];
+        ]
+    ];
 $isBetMade = false;
+$userId = isset($_SESSION['user']) ? $_SESSION['user']['id'] : null;
 
 if (isset($_GET['id'])) {
     $lotId = $_GET['id'];
-    $lot = array_key_exists($lotId, $lots) ? $lots[$lotId] : null;
+
+    $lot = selectData($connection, 'SELECT * FROM lot WHERE id = ?', [$lotId])[0];
+    $priceStart = $lot['price_start'];
+    $betStep = $lot['bet_step'];
+
+    $bets = selectData($connection, 'SELECT date, price, name FROM bet JOIN user ON bet.user_id = user.id WHERE lot_id = ? ORDER BY bet.id DESC', [$lotId]);
+    $userBets = isset($_SESSION['user']) ? selectData($connection, 'SELECT * FROM bet WHERE user_id = ? AND lot_id = ?', [$userId, $lotId]) : null;
 }
 
-if (isset($_COOKIE['userBets'])) {
-    $betCookie = json_decode($_COOKIE['userBets'], true);
-
-    if (array_key_exists($lotId, $betCookie))  {
-        $isBetMade = true;
-    }
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach($_POST as $key => $value) {
         $predicate = $validationRules[$key]['predicate'];
         $msg = $validationRules[$key]['errorMessage'];
-        $result = call_user_func($predicate, $value, $msg);
+        $result = call_user_func($predicate, $value, $msg, [ 'price_start' => $priceStart, 'bet_step' => $betStep ]);
 
         if(!$result['isValid']) {
             $formErrors[$key] = $result['errorMessage'];
         }
     }
 
-    if (count($formErrors) === 0) {
+    if (empty($formErrors)) {
         $betInfo = [
-            'lotId' => $lotId,
+            'lot_id' => $lotId,
+            'user_id' => $userId,
             'price' => $_POST['price'],
-            'time' => time()
+            'date' => gmdate("Y-m-d H:i:s", time()),
         ];
 
-        $betCookie[$lotId] = $betInfo;
-        setcookie('userBets', json_encode($betCookie));
-        header("Location: /my-lots.php");
+        $betId = insertData($connection, 'bet', $betInfo);
+
+        if ($betId) {
+            header("Location: /my-lots.php");
+        }
     }
 }
 
 if (isset($lot)) {
     $lotContent = renderTemplate('./templates/lot.php', [
+        'lot' => $lot,
+        'lotId' => $lotId,
         'categories' => $categories,
         'formErrors' => $formErrors,
         'bets' => $bets,
-        'isBetMade' => $isBetMade,
-        'is_auth' => $is_auth,
-        'lotId' => $lotId,
-        'lot' => $lot,
+        'bet_permited' => $is_auth && $lot['author_id'] != $userId && count($userBets) == 0
         ]);
     } else {
         http_response_code(404);

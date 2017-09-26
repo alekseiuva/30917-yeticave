@@ -1,24 +1,20 @@
 <?php
 require_once 'mysql_helper.php';
-$is_auth = isset($_SESSION['user']);
-$user_name = $_SESSION['user']['name'] ?? null;
-$user_avatar = $_SESSION['user']['avatar'] ?? 'img/no-avatar.jpg';
 
-// устанавливаем часовой пояс в Московское время
-date_default_timezone_set('Europe/Moscow');
-
-// записать в эту переменную оставшееся время в этом формате (ЧЧ:ММ)
-$lot_time_remaining = "00:00";
-
-// временная метка для полночи следующего дня
-$tomorrow = strtotime('tomorrow midnight');
-
-// временная метка для настоящего времени
-$now = time();
-
-// оставшееся время до начала следующих суток
-$seconds_remaining = $tomorrow - $now;
-$lot_time_remaining = gmdate("H:i", $seconds_remaining);
+/**
+* Форматирование времени
+*
+* @param $id
+* @param $categories
+* @return string – отформатированное время до окончания ставки
+**/
+function getCategoryName($id, $categories) {
+    foreach ($categories as $category) {
+        if ($category['id'] == $id) {
+            return htmlspecialchars($category['name']);
+        }
+    }
+}
 
 /**
 * Форматирование времени
@@ -53,7 +49,8 @@ function formatRemaingTime($betEndStr) {
 * @param $unixSeconds – количество секунд
 * @return string – отформатированная дата
 **/
-function formatTime($unixSeconds) {
+function formatTime($ts) {
+    $unixSeconds = strtotime($ts);
     $now = time();
     $day = 24 * 60 * 60;
     $timePassed = $now - $unixSeconds;
@@ -74,6 +71,7 @@ function formatTime($unixSeconds) {
 * Валидация полей, обязательных для заполнения
 *
 * @param $value – значение поля
+* @param $msg – сообщение об ошибке
 * @return array – массив с полями isValid, errorMessage
 **/
 function checkRequired($value, $msg) {
@@ -88,6 +86,8 @@ function checkRequired($value, $msg) {
 * Валидация выбранной категории
 *
 * @param $value – значение поля
+* @param $msg – сообщение об ошибке
+* @param $categories – массив категорий
 * @return array – массив с полями isValid, errorMessage
 **/
 function checkCategory($value, $msg, $categories) {
@@ -102,6 +102,7 @@ function checkCategory($value, $msg, $categories) {
 * Валидация числовых значений
 *
 * @param $value – значение поля
+* @param $msg – сообщение об ошибке
 * @return array – массив с полями isValid, errorMessage
 **/
 function checkNumber($value, $msg) {
@@ -113,9 +114,31 @@ function checkNumber($value, $msg) {
 }
 
 /**
+* Валидация ставки
+*
+* @param $value – значение поля
+* @param $msg – сообщение об ошибке
+* @param $categories – массив опций
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkBet($value, $msg, $options) {
+    $isNumber = checkNumber($value, $msg);
+
+    if ($isNumber['isValid']) {
+        $isEnough = $value >= ($options['price_start'] + $options['bet_step']);
+        return [
+            'isValid' => $isEnough,
+            'errorMessage' => $isEnough ? '' : $msg
+        ];
+    }
+    return $isNumber;
+}
+
+/**
 * Валидация числовых даты
 *
 * @param $value – значение поля
+* @param $msg – сообщение об ошибке
 * @return array – массив с полями isValid, errorMessage
 **/
 function checkExpDate($value, $msg) {
@@ -147,14 +170,6 @@ function renderTemplate($path, $args) {
     include $path;
 
     return ob_get_clean();
-}
-
-function searchUserByEmail($email, $users) {
-    foreach ($users as $user) {
-        if ($user['email'] == $email) {
-            return $user;
-        }
-    }
 }
 
 function getLotId($name, $lots) {
@@ -230,5 +245,107 @@ function execQuery($link, $query, $queryData = []) {
     $stmt = db_get_prepare_stmt($link, $query, $queryData);
 
     return $stmt ? mysqli_stmt_execute($stmt) : false;
+}
+
+/**
+* Валидация поля email
+*
+* @param $value – значение поля
+* @param $msg – сообщение об ошибке
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkEmailIsValid($value, $msg) {
+    $isValid = filter_var($value, FILTER_VALIDATE_EMAIL);
+    return [
+        'isValid' => boolval($isValid),
+        'errorMessage' => boolval($isValid) ? '' : $msg
+    ];
+}
+
+/**
+* Валидация поля email
+*
+* @param $value – значение поля
+* @param $msg – сообщение об ошибке
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkEmailExists($value, $msg, $link) {
+    $user = searchUserByEmail($value, $link);
+    $isNotUsed = count($user) == 0;
+    return [
+        'isValid' => $isNotUsed,
+        'errorMessage' => $isNotUsed ? '' : $msg
+    ];
+}
+
+/**
+* Валидация поля email
+*
+* @param $value – значение поля
+* @param $msg – сообщение об ошибке
+* @param $link – ресурс соединения с бд
+* @return array – массив с полями isValid, errorMessage
+**/
+function checkEmail($value, $msg, $link) {
+    $emptyCheck = checkRequired($value, 'Укажите email');
+    $validityCheck = checkEmailIsValid($value, 'Укажите валидный email');
+    $existanceCheck = checkEmailExists($value, $msg, $link);
+    $result = [
+        'isValid' => true,
+        'errorMessage' => ''
+    ];
+
+    foreach ([$emptyCheck, $validityCheck, $existanceCheck] as $check) {
+        if (!$check['isValid']) {
+            $result = [
+                'isValid' => $check['isValid'],
+                'errorMessage' => $check['errorMessage']
+            ];
+        }
+    }
+
+    return $result;
+}
+
+function searchUserByEmail($email, $link) {
+    return selectData($link, 'SELECT * FROM user WHERE email = ?', [$email]);
+}
+
+function saveFile($file) {
+    $validFileTypes = ['image/jpeg', 'image/png'];
+
+    if ($file['error'] == 0) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $fileName = $file['name'];
+        $fileSize = $file['size'];
+        $fileType = finfo_file($finfo, $file['tmp_name']);
+        $isTypeValid = in_array($fileType, $validFileTypes);
+        $isSizeValid = $fileSize < 200000;
+
+        if (!$isTypeValid) {
+            return [
+                'isValid' => false,
+                'errorMessage' => 'Загрузите картинку в формате JPEG'
+            ];
+        }
+
+        if (!$isSizeValid) {
+            return [
+                'isValid' => false,
+                'errorMessage' => 'Максимальный размер файла – 200Кб'
+            ];
+        }
+
+        if ($isTypeValid && $isSizeValid) {
+            $filePath = __DIR__ . '/img/';
+            $fileUrl = '/img/' . $fileName;
+            move_uploaded_file($file['tmp_name'], $filePath . $fileName);
+
+            return [
+                'isValid' => true,
+                'fileUrl' => $fileUrl
+            ];
+        }
+    }
 }
 ?>

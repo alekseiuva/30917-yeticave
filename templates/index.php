@@ -17,7 +17,7 @@
 
         <select class="lots__select">
         <?php foreach($categories as $category): ?>
-            <option><?=htmlspecialchars($category['name']);?></option>
+            <option value="<?= $category['id']; ?>"><?=htmlspecialchars($category['name']);?></option>
         <?php endforeach; ?>
         </select>
     </div>
@@ -28,9 +28,9 @@
                 <img src="<?=$lot['image']?>" width="350" height="260" alt="Сноуборд">
             </div>
             <div class="lot__info">
-                <span class="lot__category"><?=htmlspecialchars($categories[$lot['category_id']]['name']);?></span>
+                <span class="lot__category"><?= getCategoryName($lot['category_id'], $categories); ?></span>
                 <h3 class="lot__title">
-                    <a class="text-link" href="lot.php?id=<?= $key ?>">
+                    <a class="text-link" href="lot.php?id=<?= $lot['id'] ?>">
                         <?=htmlspecialchars($lot['name'])?>
                     </a>
                 </h3>

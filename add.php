@@ -1,10 +1,6 @@
 <?php
-session_start();
-require_once 'functions.php';
-require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
-require_once 'data/bets.php';
 
 $formErrors = [];
 $fileUrl = null;
@@ -50,51 +46,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-
-        $fileName = $_FILES['image']['name'];
-        $fileSize = $_FILES['image']['size'];
-        $fileType = finfo_file($finfo, $_FILES['image']['tmp_name']);
-        $isTypeValid = in_array($fileType, $validFileTypes);
-        $isSizeValid = $fileSize < 200000;
-
-        if (!$isTypeValid) {
-            $formErrors['image']  = 'Загрузите картинку в формате JPEG';
-        }
-
-        if (!$isSizeValid) {
-            $formErrors['image']  = 'Максимальный размер файла – 200Кб';
-        }
-
-        if ($isTypeValid && $isSizeValid) {
-            $filePath = __DIR__ . '/img/';
-            $fileUrl = '/img/' . $fileName;
-            move_uploaded_file($_FILES['image']['tmp_name'], $filePath . $fileName);
-        }
+    $fileInfo = saveFile($_FILES['image']);
+    if ($fileInfo['isValid']) {
+        $fileUrl = $fileInfo['fileUrl'];
+    } else {
+        $formErrors['image']  = $fileInfo['errorMessage'];
     }
 }
 
 $lot = [
     'name' => $_POST['name'] ?? '',
     'description' => $_POST['description'] ?? '',
-    'category' => $_POST['category'] ?? '',
-    'price' => $_POST['price']  ?? '',
-    'step' => $_POST['step'] ?? '',
-    'date' => $_POST['date'] ?? '',
-    'image' => $fileUrl
+    'category_id' => $_POST['category'] ?? '',
+    'price_start' => $_POST['price']  ?? '',
+    'bet_step' => $_POST['step'] ?? '',
+    'date_start' => gmdate("Y-m-d H:i:s", time()),
+    'date_expires' => $_POST['date'] ?? '',
+    'image' => $fileUrl,
+    'author_id' => isset($_SESSION['user']) ? $_SESSION['user']['id'] : '',
 ];
 
-$lotTemplate = empty($formErrors) && $_SERVER['REQUEST_METHOD'] == 'POST' ?
-    './templates/lot.php' :
-    './templates/add-lot.php';
-
-$formContent = renderTemplate($lotTemplate, [
+$formContent = renderTemplate('./templates/add-lot.php', [
     'formErrors' => $formErrors,
     'categories' => $categories,
-    'pew' => $_FILES,
-    'lot' => $lot,
-    'bets' => $bets
+    'lot' => $lot
 ]);
 
 $html = renderTemplate('./templates/layout.php', [
@@ -106,11 +81,37 @@ $html = renderTemplate('./templates/layout.php', [
     'user_avatar' => $user_avatar,
 ]);
 
-if (isset($_SESSION['user'])) {
-    print($html);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!isset($_SESSION['user'])) {
+        header('Location: /login.php');
+    }
+
+    if(empty($formErrors)) {
+        foreach ($lot as $item) {
+            if(empty($item)) {
+                unset($item);
+            }
+        }
+        $newId = insertData($connection, 'lot', $lot);
+
+        if ($newId) {
+            header('Location: /lot.php?id=' . $newId);
+        } else {
+            $errorPage = renderTemplate('./templates/error.php', [
+                'error_msg' => 'id s' . var_dump($newId),
+            ]);
+            print($errorPage);
+        }
+    } else {
+        print($html);
+    }
 } else {
-    // header('HTTP/1.1 403 Forbidden');
-    header('Location: /login.php');
+    if (isset($_SESSION['user'])) {
+        print($html);
+    } else {
+        header('Location: /login.php');
+    }
 }
 
 ?>
+

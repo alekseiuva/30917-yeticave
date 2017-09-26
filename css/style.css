@@ -824,6 +824,10 @@ h2 {
   color: #f84646;
 }
 
+.form__error--visible {
+  display: block;
+}
+
 .form__error--bottom {
   display: none;
   margin-bottom: 15px;
