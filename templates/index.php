@@ -21,6 +21,7 @@
         <?php endforeach; ?>
         </select>
     </div>
+
     <ul class="lots__list">
     <?php foreach($lots as $key => $lot): ?>
         <li class="lots__item lot">
@@ -46,6 +47,34 @@
             </div>
         </li>
     <?php endforeach; ?>
+    </ul>
+
+    <ul class="pagination-list">
+        <li class="pagination-item pagination-item-prev">
+            <?php if($curr_page > 1): ?>
+                <a href="/?page=<?=($curr_page - 1)?>">
+                    Назад
+                </a>
+            <?php else: ?>
+                <span>Назад</span>
+            <?php endif; ?>
+        </li>
+
+        <?php foreach(range(1, $total_pages) as $key => $page): ?>
+            <li class="<?= $page == $curr_page ? "pagination-item pagination-item-active" : "pagination-item"?>" >
+                <a href="/?page=<?= $page ?>"><?=$page?></a>
+            </li>
+        <?php endforeach; ?>
+
+        <li class="pagination-item pagination-item-next">
+            <?php if($curr_page < $total_pages): ?>
+                <a href="/?page=<?=($curr_page + 1)?>">
+                    Вперед
+                </a>
+            <?php else: ?>
+                <span>Вперед</span>
+            <?php endif; ?>
+        </li>
     </ul>
 </section>
 
