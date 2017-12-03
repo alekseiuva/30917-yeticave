@@ -1,6 +1,14 @@
 {
-    "name": "yeticave",
-    "description": "Личный проект «YetiCave» от HTML Academy",
-    "type": "project",
-    "require": {}
+  "name": "alexandra/30917-yeticave",
+  "description": "tutorial",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Aleksandra Godun",
+      "email": "mister.blblbl@gmail.com"
+    }
+  ],
+  "require": {
+    "swiftmailer/swiftmailer": "^6.0"
+  }
 }
