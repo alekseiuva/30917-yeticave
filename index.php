@@ -1,6 +1,7 @@
 <?php
 require_once 'init.php';
 require_once 'data.php';
+require_once 'getwinner.php';
 
 $page_size = 3;
 $total_items = selectData($connection, 'SELECT COUNT(*) as count FROM lot');

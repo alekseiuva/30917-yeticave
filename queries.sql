@@ -99,3 +99,17 @@ WHERE id = 4;
 
 -- Получить список самых свежих ставок для лота по его идентификатору;
 SELECT * FROM bet WHERE lot_id = 3 ORDER BY id DESC;
+
+-- Получить список самых крупных ставок для истёкших лотов, у которых ещё нет победителя
+SELECT
+bet.lot_id as lot_id,
+bet.user_id as user_id,
+lot.name as lot_name,
+user.name as user_name,
+user.email as user_email,
+MAX(bet.price) as bet_price
+FROM bet
+INNER JOIN lot ON bet.lot_id = lot.id
+INNER JOIN user ON bet.user_id = user.id
+WHERE lot.date_expires <= now() AND lot.winner_id IS NULL
+GROUP BY lot_id, user_id";
