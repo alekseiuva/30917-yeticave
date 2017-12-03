@@ -22,13 +22,13 @@
                     <h3 class="rates__title">
                         <a href="lot.php?id=<?= $bet['lot_id'] ?>"><?= htmlspecialchars($bet['name']); ?></a>
                     </h3>
-                    <?php if ($bet['status'] === 'win'): ?>
+                    <?php if ($bet['winner_id'] === $user_id): ?>
                     <p><?= htmlspecialchars($bet['info']); ?></p>
                     <?php endif; ?>
                 </div>
             </td>
 
-            <td class="rates__category"><?= getCategoryName($lot['category_id'], $categories) ?></td>
+            <td class="rates__category"><?= getCategoryName($bet['category_id'], $categories) ?></td>
             <td class="rates__timer">
                 <div class="<?= "timer timer--" . $bet['status']; ?>">
                     <!-- TODO: fix it when all values are stored in db in the same format -->

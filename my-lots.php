@@ -1,16 +1,17 @@
 <?php
-session_start();
 require_once 'functions.php';
 require_once 'mysql_helper.php';
 require_once 'init.php';
 require_once 'data.php';
 
-$myBets = selectData($connection, 'SELECT * FROM bet JOIN lot ON bet.lot_id = lot.id;');
+$userId = isset($_SESSION['user']) ? $_SESSION['user']['id'] : null;
+$myBets = selectData($connection, 'SELECT * FROM bet JOIN lot ON bet.lot_id = lot.id WHERE user_id = ?', [ $userId ]);
 $lots = selectData($connection, 'SELECT * FROM lot');
 
 $lotContent = renderTemplate('./templates/my-lots.php', [
     'bets' => $myBets,
     'lots' => $lots,
+    'user_id' => $userId,
     'categories' => $categories
 ]);
 
@@ -23,5 +24,10 @@ $html = renderTemplate('./templates/layout.php', [
     'user_avatar' => $user_avatar,
 ]);
 
-print($html);
+if (isset($_SESSION['user'])) {
+    print($html);
+} else {
+    header('Location: /login.php');
+}
+
 ?>
